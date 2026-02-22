@@ -1,0 +1,28 @@
+version: '3'
+services:
+  openconnect:
+    image: zcalusic/openconnect:latest
+    container_name: openconnect
+    restart: unless-stopped
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    network_mode: host
+    volumes:
+      - ./certs:/etc/openconnect/certs:ro
+    devices:
+      - /dev/net/tun
+    command: >
+      openconnect
+      --protocol=anyconnect
+      --certificate=/etc/openconnect/certs/client.p12
+      --key-password=YOUR_PASSWORD_HERE
+      --non-inter
+      --no-dtls
+      YOUR_VPN_SERVER:PORT
+
+# 使用说明：
+# 1. 将证书文件 client.p12 放到 ./certs/ 目录
+# 2. 修改 --key-password 为实际密码
+# 3. 修改 VPN 服务器地址
+# 4. 运行: docker-compose up -d
